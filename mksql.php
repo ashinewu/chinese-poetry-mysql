@@ -6,7 +6,7 @@
 
 set_time_limit(0);
 
-$poetryBasePath  = "/data/opensource/chinese-poetry";
+$poetryBasePath  = "/Users/ashine/Documents/studyworkspace/chinese-poetry";
 $poetryDataPath  = $poetryBasePath."/json";
 $poemsDataPath   = $poetryBasePath."/ci";
 $lunyuDataPath   = $poetryBasePath."/lunyu";
@@ -15,8 +15,8 @@ $shijingDataPath = $poetryBasePath."/shijing";
 $host = "127.0.0.1";
 $port = 3306;
 $username = "root";
-$password = "1234";
-$poetryDb = "poetry_new";
+$password = "007";
+$poetryDb = "poetry";
 
 $db = mysqli_connect($host, $username, $password, $poetryDb, $port);
 if (mysqli_connect_error()) {
@@ -30,24 +30,13 @@ mkSQL();
 
 //============================= 执行函数区
 function mkSQL() {
-    //生成唐宋诗作者数据
-    mkPoetAuthor("T");
-    mkPoetAuthor("S");
+  
 
     //生成唐宋诗数据
     mkPoetData("T");
     mkPoetData("S");
-
-    //生成宋词作者数据
-    mkPoemsAuthor();
-    //生成宋词数据
+  //生成宋词数据
     mkPoemsData();
-
-    //生成论语数据
-    mkLunyuData();
-
-    //生成诗经数据
-    mkShijingData();
 }
 
 function mkLunyuData() {
@@ -145,7 +134,8 @@ function mkPoemsData() {
         $value = '';
         foreach ($poemsDataArray as $val) {
             $authorId = isset($authorData[$val['author']]) ? $authorData[$val['author']] : 0;
-            $v = '('.$authorId.', "'.$val['rhythmic'].'", "'.implode("|", $val['paragraphs']).'", "'.$val['author'].'")';
+              $content1 = json_encode($val['paragraphs'],JSON_UNESCAPED_UNICODE);
+            $v = '('.$authorId.', "'.$val['rhythmic'].'", \''.$content1.'\', "", "'.$val['author'].'")';
             $value .= $value == '' ? $v : ','.$v;
         }
 
@@ -193,7 +183,8 @@ function mkPoetData($dynasty) {
         $value = '';
         foreach ($poetDataArray as $val) {
             $authorId = isset($authorData[$val['author']]) ? $authorData[$val['author']] : 0;
-            $v = '('.$authorId.', "'.$val['title'].'", "'.implode("|", $val['paragraphs']).'", "'.implode("|", $val['strains']).'", "'.$val['author'].'", "'.$dynasty.'")';
+            $content1 = json_encode($val['paragraphs'],JSON_UNESCAPED_UNICODE);
+            $v = '('.$authorId.', "'.$val['title'].'", \''.$content1.'\', "", "'.$val['author'].'", "'.$dynasty.'")';
             $value .= $value == '' ? $v : ','.$v;
         }
 
